@@ -4,6 +4,10 @@ import { Button } from "@/components/ui/button"
 import { ArrowLeft } from "lucide-react"
 import Link from "next/link"
 
+// Make this page dynamic to handle API calls
+export const dynamic = "force-dynamic"
+export const revalidate = 0
+
 export default function MarketDetailsPage() {
   return (
     <main className="min-h-screen bg-gradient-to-br from-gray-900 via-blue-900 to-black p-4 md:p-8">

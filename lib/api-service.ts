@@ -1,6 +1,6 @@
 import type { Market, DailyData } from "./types"
 
-// Real API service for fetching live data from my.wefx.top
+// Real API service for fetching live data from ai.cxt.com
 export class MarketAPIService {
   private static instance: MarketAPIService
   private baseURL = "https://ai.cxt.com"
@@ -14,12 +14,21 @@ export class MarketAPIService {
     return MarketAPIService.instance
   }
 
-  // Fetch live market data from my.wefx.top
+  // Fetch live market data from ai.cxt.com
   async fetchLiveMarketData(): Promise<Market[]> {
+    // Skip API calls during build time
+    if (typeof window === "undefined" && process.env.NODE_ENV === "production") {
+      console.log("⏭️ Skipping API call during build time")
+      return this.generateFallbackData()
+    }
+
     try {
       console.log("🔄 Fetching live market data from ai.cxt.com...")
 
-      // Real API call to my.wefx.top
+      // Real API call to ai.cxt.com with timeout
+      const controller = new AbortController()
+      const timeoutId = setTimeout(() => controller.abort(), 5000) // 5 second timeout
+
       const response = await fetch(`${this.baseURL}/api/markets`, {
         method: "GET",
         headers: {
@@ -27,7 +36,10 @@ export class MarketAPIService {
           "User-Agent": "CXT-Trading-Platform/1.0",
         },
         cache: "no-cache",
+        signal: controller.signal,
       })
+
+      clearTimeout(timeoutId)
 
       if (!response.ok) {
         throw new Error(`API Error: ${response.status} ${response.statusText}`)
@@ -149,8 +161,10 @@ export class MarketAPIService {
     return data
   }
 
-  // Start automatic data collection (runs every day at midnight Bangladesh time)
+  // Start automatic data collection (only in browser)
   startAutomaticDataCollection(): void {
+    if (typeof window === "undefined") return
+
     console.log("🚀 Starting automatic data collection system...")
 
     // Initial fetch
