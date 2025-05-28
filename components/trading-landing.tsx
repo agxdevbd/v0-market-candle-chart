@@ -25,8 +25,8 @@ import { UpcomingMarkets } from "@/components/upcoming-markets"
 import { UserCounter } from "@/components/user-counter"
 import { BackgroundAnimation } from "@/components/background-animation"
 import { BankStatus } from "@/components/bank-status"
+import { MarketList } from "@/components/market-list"
 import Link from "next/link"
-import { MarketOverview } from "@/components/market-overview"
 
 export function TradingLanding() {
   const [currentPrice, setCurrentPrice] = useState(36.0)
@@ -53,6 +53,15 @@ export function TradingLanding() {
 
     return () => clearInterval(interval)
   }, [])
+
+  // Internal market details handler
+  const handleMarketDetails = () => {
+    // Scroll to market list section
+    const marketSection = document.querySelector("[data-market-section]")
+    if (marketSection) {
+      marketSection.scrollIntoView({ behavior: "smooth" })
+    }
+  }
 
   return (
     <div className="relative min-h-screen overflow-hidden">
@@ -161,7 +170,7 @@ export function TradingLanding() {
             className="text-lg text-blue-200 mb-6 max-w-2xl mx-auto"
           >
             <span className="hidden md:inline">Experience the future of trading with our AI-controlled platform</span>
-            <span className="md:hidden">AI-powered trading at your fingertips</span>
+            <span className="md:hidden">AI-powered trading platform</span>
           </motion.p>
 
           {/* AI Features */}
@@ -175,6 +184,7 @@ export function TradingLanding() {
               { icon: <Bot className="w-4 h-4" />, text: "AI Trading" },
               { icon: <Cpu className="w-4 h-4" />, text: "Smart Analysis" },
               { icon: <Sparkles className="w-4 h-4" />, text: "Auto Signals" },
+              { icon: <BarChart3 className="w-4 h-4" />, text: "Live Charts" },
             ].map((feature, index) => (
               <motion.div
                 key={index}
@@ -215,14 +225,12 @@ export function TradingLanding() {
             className="flex flex-col sm:flex-row items-center justify-center gap-4"
           >
             <Button
-              asChild
+              onClick={handleMarketDetails}
               size="lg"
               className="bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-lg px-8 py-3 w-full sm:w-auto"
             >
-              <Link href="/market-details">
-                <BarChart3 className="w-5 h-5 mr-2" />
-                Market Details
-              </Link>
+              <BarChart3 className="w-5 h-5 mr-2" />
+              Market Details
             </Button>
 
             <Button
@@ -245,6 +253,17 @@ export function TradingLanding() {
 
       {/* Bank Status Section */}
       <BankStatus />
+
+      {/* Market List Section */}
+      <motion.section
+        initial={{ opacity: 0, y: 50 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 1.0 }}
+        className="relative z-10 py-8"
+        data-market-section
+      >
+        <MarketList />
+      </motion.section>
 
       {/* Main Content */}
       <motion.section
@@ -287,9 +306,6 @@ export function TradingLanding() {
           </Tabs>
         </div>
       </motion.section>
-
-      {/* Market Overview Section */}
-      <MarketOverview />
 
       {/* Mobile App Banner - Only on Mobile */}
       {isMobile && (

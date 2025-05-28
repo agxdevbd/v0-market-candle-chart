@@ -10,7 +10,7 @@ import { MarketCandlestick } from "@/components/market-candlestick"
 import { MarketDetailView } from "@/components/market-detail-view"
 import { TrendingUp, TrendingDown, BarChart3, X, Calendar, TimerIcon as Timeline } from "lucide-react"
 import { formatCurrency } from "@/lib/utils"
-import { marketData } from "@/lib/market-data"
+import { allMarkets as marketData } from "@/lib/market-data"
 import type { Market } from "@/lib/types"
 
 export function MarketOverview() {

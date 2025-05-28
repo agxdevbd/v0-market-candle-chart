@@ -1,5 +1,7 @@
 export interface Market {
+  id: string
   name: string
+  logo: string
   price: number
   percentChange: number
   ytdChange: number
@@ -15,4 +17,8 @@ export interface DailyData {
   high: number
   low: number
   close: number
+}
+
+export interface MarketDescription {
+  [key: string]: string
 }
