@@ -23,7 +23,7 @@ import { Leaderboard } from "@/components/leaderboard"
 import { SocialProfiles } from "@/components/social-profiles"
 import { UpcomingMarkets } from "@/components/upcoming-markets"
 import { UserCounter } from "@/components/user-counter"
-import { BackgroundAnimation } from "@/components/background-animation"
+import { BackgroundAnimation } from "@/components/background_animation"
 import { BankStatus } from "@/components/bank-status"
 import { MarketList } from "@/components/market-list"
 import Link from "next/link"
@@ -88,7 +88,7 @@ export function TradingLanding() {
               size={isMobile ? "sm" : "default"}
               className="border-blue-400 text-blue-400 hover:bg-blue-400 hover:text-white"
             >
-              <Link href="https://my.wefx.top/user/login">
+              <Link href="https://ai.cxt.com/user/login">
                 {isMobile ? (
                   "Login"
                 ) : (
@@ -103,7 +103,7 @@ export function TradingLanding() {
               size={isMobile ? "sm" : "default"}
               className="bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700"
             >
-              <Link href="https://my.wefx.top/user/register">
+              <Link href="https://ai.cxt.com/user/register">
                 {isMobile ? (
                   "Register"
                 ) : (
@@ -239,7 +239,7 @@ export function TradingLanding() {
               size="lg"
               className="border-blue-400 text-blue-400 hover:bg-blue-400 hover:text-white w-full sm:w-auto"
             >
-              <Link href="https://my.wefx.top/user/register">
+              <Link href="https://ai.cxt.com/user/register">
                 <Rocket className="w-5 h-5 mr-2" />
                 Start Trading
               </Link>
@@ -324,7 +324,7 @@ export function TradingLanding() {
               </div>
             </div>
             <Button size="sm" variant="secondary" asChild>
-              <Link href="https://my.wefx.top/user/register">Try Now</Link>
+              <Link href="https://ai.cxt.com/user/register">Try Now</Link>
             </Button>
           </div>
         </motion.div>

@@ -195,5 +195,5 @@ export function MarketCandlestick({ market, showPercentage = false, showDates = 
     }
   }
 
-  return <canvas ref={canvasRef} className="w-full h-full" />
+  return <canvas ref={canvasRef} className="w-full h-full" data-chart-canvas />
 }

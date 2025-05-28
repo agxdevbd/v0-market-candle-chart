@@ -6,6 +6,8 @@ export interface Market {
   percentChange: number
   ytdChange: number
   investment: number
+  marketCap?: number
+  volume24h?: number
   historicalData?: DailyData[]
 }
 
@@ -21,4 +23,19 @@ export interface DailyData {
 
 export interface MarketDescription {
   [key: string]: string
+}
+
+export interface APIResponse {
+  markets: Array<{
+    symbol: string
+    name: string
+    price: string
+    change_24h: string
+    change_7d: string
+    market_cap: string
+    volume_24h: string
+    logo?: string
+  }>
+  last_updated: string
+  status: string
 }

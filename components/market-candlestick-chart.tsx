@@ -183,6 +183,7 @@ export function MarketCandlestickChart({ market }: MarketCandlestickChartProps) 
       ref={canvasRef}
       className="w-full h-full rounded-lg border border-gray-800"
       style={{ background: "#000000" }}
+      data-chart-canvas
     />
   )
 }

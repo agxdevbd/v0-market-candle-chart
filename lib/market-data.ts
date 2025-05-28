@@ -1,309 +1,72 @@
 import type { Market } from "./types"
+import { marketAPI } from "./api-service"
 
-// সব মার্কেটের ডেটা (আজীবন চলমান সিস্টেম)
-export const allMarkets: Market[] = [
-  {
-    id: "adsterra",
-    name: "Adsterra",
-    logo: "/logos/adsterra.png",
-    price: 34.91,
-    percentChange: -2.0,
-    ytdChange: 0.0,
-    investment: 10000.0,
-    historicalData: generateContinuousHistoricalData(34.91, -2.0),
-  },
-  {
-    id: "alpha",
-    name: "Alpha",
-    logo: "/logos/alpha.png",
-    price: 42.75,
-    percentChange: 5.21,
-    ytdChange: 0.0,
-    investment: 10000.0,
-    historicalData: generateContinuousHistoricalData(42.75, 5.21),
-  },
-  {
-    id: "arrowprime",
-    name: "ArrowPrime",
-    logo: "/logos/arrowprime.png",
-    price: 44.65,
-    percentChange: -1.24,
-    ytdChange: 16.74,
-    investment: 10000.0,
-    historicalData: generateContinuousHistoricalData(44.65, -1.24),
-  },
-  {
-    id: "coolagency",
-    name: "Cool Agency",
-    logo: "/logos/coolagency.png",
-    price: 58.0,
-    percentChange: -6.21,
-    ytdChange: 0.0,
-    investment: 10000.0,
-    historicalData: generateContinuousHistoricalData(58.0, -6.21),
-  },
-  {
-    id: "cxt",
-    name: "CXT",
-    logo: "/logos/cxt.png",
-    price: 31.31,
-    percentChange: 1.31,
-    ytdChange: 0.0,
-    investment: 50000.0,
-    historicalData: generateContinuousHistoricalData(31.31, 1.31),
-  },
-  {
-    id: "flooido",
-    name: "Flooido",
-    logo: "/logos/flooido.png",
-    price: 28.0,
-    percentChange: 7.0,
-    ytdChange: 0.0,
-    investment: 10000.0,
-    historicalData: generateContinuousHistoricalData(28.0, 7.0),
-  },
-  {
-    id: "foundstock",
-    name: "Found Stock",
-    logo: "/logos/foundstock.png",
-    price: 58.98,
-    percentChange: -1.21,
-    ytdChange: 0.0,
-    investment: 10000.0,
-    historicalData: generateContinuousHistoricalData(58.98, -1.21),
-  },
-  {
-    id: "growco",
-    name: "Grow Co",
-    logo: "/logos/growco.png",
-    price: 17.0,
-    percentChange: 8.64,
-    ytdChange: 0.0,
-    investment: 10000.0,
-    historicalData: generateContinuousHistoricalData(17.0, 8.64),
-  },
-  {
-    id: "kt",
-    name: "KT",
-    logo: "/logos/kt.png",
-    price: 53.0,
-    percentChange: -2.24,
-    ytdChange: 0.0,
-    investment: 10000.0,
-    historicalData: generateContinuousHistoricalData(53.0, -2.24),
-  },
-  {
-    id: "makingm",
-    name: "Making m",
-    logo: "/logos/makingm.png",
-    price: 31.0,
-    percentChange: 13.21,
-    ytdChange: 0.0,
-    investment: 10000.0,
-    historicalData: generateContinuousHistoricalData(31.0, 13.21),
-  },
-  {
-    id: "monetag",
-    name: "Monetag",
-    logo: "/logos/monetag.png",
-    price: 46.76,
-    percentChange: -2.79,
-    ytdChange: 0.0,
-    investment: 10000.0,
-    historicalData: generateContinuousHistoricalData(46.76, -2.79),
-  },
-  {
-    id: "nexusdigital",
-    name: "Nexus Digital",
-    logo: "/logos/nexusdigital.png",
-    price: 26.0,
-    percentChange: -4.0,
-    ytdChange: 0.0,
-    investment: 10000.0,
-    historicalData: generateContinuousHistoricalData(26.0, -4.0),
-  },
-  {
-    id: "nx",
-    name: "NX",
-    logo: "/logos/nx.png",
-    price: 42.76,
-    percentChange: 8.21,
-    ytdChange: 0.0,
-    investment: 10000.0,
-    historicalData: generateContinuousHistoricalData(42.76, 8.21),
-  },
-  {
-    id: "oxw",
-    name: "O X W",
-    logo: "/logos/oxw.png",
-    price: 41.06,
-    percentChange: 2.88,
-    ytdChange: 0.0,
-    investment: 10000.0,
-    historicalData: generateContinuousHistoricalData(41.06, 2.88),
-  },
-  {
-    id: "onclicka",
-    name: "Onclicka",
-    logo: "/logos/onclicka.png",
-    price: 40.0,
-    percentChange: -2.21,
-    ytdChange: 0.0,
-    investment: 10000.0,
-    historicalData: generateContinuousHistoricalData(40.0, -2.21),
-  },
-  {
-    id: "pikota",
-    name: "Pikota",
-    logo: "/logos/pikota.png",
-    price: 13.7,
-    percentChange: 3.34,
-    ytdChange: 0.0,
-    investment: 8000000.0,
-    historicalData: generateContinuousHistoricalData(13.7, 3.34),
-  },
-  {
-    id: "pinterest",
-    name: "Pinterest",
-    logo: "/logos/pinterest.png",
-    price: 41.0,
-    percentChange: -3.0,
-    ytdChange: 0.0,
-    investment: 10000.0,
-    historicalData: generateContinuousHistoricalData(41.0, -3.0),
-  },
-  {
-    id: "practiq",
-    name: "Practiq",
-    logo: "/logos/practiq.png",
-    price: 24.45,
-    percentChange: 7.21,
-    ytdChange: 0.0,
-    investment: 10000.0,
-    historicalData: generateContinuousHistoricalData(24.45, 7.21),
-  },
-  {
-    id: "redfin",
-    name: "Redfin",
-    logo: "/logos/redfin.png",
-    price: 41.0,
-    percentChange: 1.21,
-    ytdChange: 0.0,
-    investment: 50000.0,
-    historicalData: generateContinuousHistoricalData(41.0, 1.21),
-  },
-  {
-    id: "renerald",
-    name: "Renerald",
-    logo: "/logos/renerald.png",
-    price: 32.0,
-    percentChange: -2.0,
-    ytdChange: 0.0,
-    investment: 10000.0,
-    historicalData: generateContinuousHistoricalData(32.0, -2.0),
-  },
-  // নতুন মার্কেট যোগ করা হলো
-  {
-    id: "techflow",
-    name: "TechFlow",
-    logo: "/logos/techflow.png",
-    price: 67.45,
-    percentChange: 4.32,
-    ytdChange: 12.5,
-    investment: 15000.0,
-    historicalData: generateContinuousHistoricalData(67.45, 4.32),
-  },
-  {
-    id: "cryptovault",
-    name: "CryptoVault",
-    logo: "/logos/cryptovault.png",
-    price: 89.12,
-    percentChange: -1.87,
-    ytdChange: 8.9,
-    investment: 20000.0,
-    historicalData: generateContinuousHistoricalData(89.12, -1.87),
-  },
-  {
-    id: "digitaledge",
-    name: "DigitalEdge",
-    logo: "/logos/digitaledge.png",
-    price: 45.67,
-    percentChange: 6.78,
-    ytdChange: 15.2,
-    investment: 12000.0,
-    historicalData: generateContinuousHistoricalData(45.67, 6.78),
-  },
-  {
-    id: "blockchainpro",
-    name: "BlockChain Pro",
-    logo: "/logos/blockchainpro.png",
-    price: 123.45,
-    percentChange: -3.21,
-    ytdChange: 22.1,
-    investment: 25000.0,
-    historicalData: generateContinuousHistoricalData(123.45, -3.21),
-  },
-  {
-    id: "metaverse",
-    name: "MetaVerse",
-    logo: "/logos/metaverse.png",
-    price: 78.9,
-    percentChange: 9.45,
-    ytdChange: 18.7,
-    investment: 18000.0,
-    historicalData: generateContinuousHistoricalData(78.9, 9.45),
-  },
-  {
-    id: "aidynamics",
-    name: "AI Dynamics",
-    logo: "/logos/aidynamics.png",
-    price: 156.78,
-    percentChange: 12.34,
-    ytdChange: 35.6,
-    investment: 30000.0,
-    historicalData: generateContinuousHistoricalData(156.78, 12.34),
-  },
-  {
-    id: "quantumtech",
-    name: "Quantum Tech",
-    logo: "/logos/quantumtech.png",
-    price: 234.56,
-    percentChange: -5.67,
-    ytdChange: 28.9,
-    investment: 40000.0,
-    historicalData: generateContinuousHistoricalData(234.56, -5.67),
-  },
-  {
-    id: "neofinance",
-    name: "NeoFinance",
-    logo: "/logos/neofinance.png",
-    price: 98.76,
-    percentChange: 3.45,
-    ytdChange: 14.3,
-    investment: 22000.0,
-    historicalData: generateContinuousHistoricalData(98.76, 3.45),
-  },
-  {
-    id: "smarttrade",
-    name: "SmartTrade",
-    logo: "/logos/smarttrade.png",
-    price: 65.43,
-    percentChange: 7.89,
-    ytdChange: 19.8,
-    investment: 16000.0,
-    historicalData: generateContinuousHistoricalData(65.43, 7.89),
-  },
-  {
-    id: "futurestock",
-    name: "FutureStock",
-    logo: "/logos/futurestock.png",
-    price: 87.65,
-    percentChange: -2.34,
-    ytdChange: 11.2,
-    investment: 19000.0,
-    historicalData: generateContinuousHistoricalData(87.65, -2.34),
-  },
-]
+// This will be populated by real API data
+export let allMarkets: Market[] = []
+
+// Initialize markets with live data
+export async function initializeMarkets(): Promise<Market[]> {
+  try {
+    console.log("🚀 Initializing markets with live data from ai.cxt.com...")
+    allMarkets = await marketAPI.fetchLiveMarketData()
+    return allMarkets
+  } catch (error) {
+    console.error("Failed to initialize markets:", error)
+    // Fallback to empty array, will be populated by API service
+    return []
+  }
+}
+
+// Update markets data (called by API service)
+export function updateMarkets(newMarkets: Market[]): void {
+  allMarkets = newMarkets
+  console.log(`📊 Markets updated: ${newMarkets.length} markets loaded`)
+}
+
+// Get current markets
+export function getCurrentMarkets(): Market[] {
+  return allMarkets
+}
+
+// Get market by ID
+export function getMarketById(id: string): Market | undefined {
+  return allMarkets.find((market) => market.id === id)
+}
+
+// Get top gainers
+export function getTopGainers(limit = 5): Market[] {
+  return allMarkets
+    .filter((market) => market.percentChange > 0)
+    .sort((a, b) => b.percentChange - a.percentChange)
+    .slice(0, limit)
+}
+
+// Get top losers
+export function getTopLosers(limit = 5): Market[] {
+  return allMarkets
+    .filter((market) => market.percentChange < 0)
+    .sort((a, b) => a.percentChange - b.percentChange)
+    .slice(0, limit)
+}
+
+// Get markets by market cap
+export function getMarketsByMarketCap(limit = 10): Market[] {
+  return allMarkets
+    .filter((market) => market.marketCap && market.marketCap > 0)
+    .sort((a, b) => (b.marketCap || 0) - (a.marketCap || 0))
+    .slice(0, limit)
+}
+
+// Search markets
+export function searchMarkets(query: string): Market[] {
+  const lowercaseQuery = query.toLowerCase()
+  return allMarkets.filter(
+    (market) => market.name.toLowerCase().includes(lowercaseQuery) || market.id.toLowerCase().includes(lowercaseQuery),
+  )
+}
+
+// Initialize on module load
+initializeMarkets()
 
 // আজীবন চলমান হিস্টোরিক্যাল ডেটা জেনারেট করার ফাংশন
 function generateContinuousHistoricalData(currentPrice: number, currentPercentChange: number) {
@@ -340,6 +103,3 @@ function generateContinuousHistoricalData(currentPrice: number, currentPercentCh
 
   return data.reverse()
 }
-
-// Export marketData as an alias to allMarkets for backward compatibility
-export const marketData = allMarkets

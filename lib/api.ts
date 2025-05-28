@@ -1,13 +1,13 @@
 import type { Market, DailyData } from "./types"
 import { allMarkets } from "./market-data"
 
-// এই ফাংশনটি https://my.wefx.top/ থেকে মার্কেট ডেটা ফেচ করবে
+// এই ফাংশনটি https://ai.cxt.com/ থেকে মার্কেট ডেটা ফেচ করবে
 // প্রতিদিন রাত ১২টার পর বাংলাদেশ টাইমে (ব্যাকগ্রাউন্ড প্রসেস)
 export async function fetchMarketData(): Promise<Market[]> {
   try {
     // বর্তমানে ডামি ডেটা রিটার্ন করছে
     // পরবর্তীতে এখানে API কল করতে হবে:
-    // const response = await fetch('https://my.wefx.top/api/markets');
+    // const response = await fetch('https://ai.cxt.com/api/markets');
     // const data = await response.json();
 
     // ব্যাকগ্রাউন্ড ডেটা আপডেট (ইউজারদের দেখানো হবে না)
@@ -29,7 +29,7 @@ export async function fetchMarketData(): Promise<Market[]> {
 
 // সাইলেন্ট ব্যাকগ্রাউন্ড আপডেট (ইউজারদের দেখানো হবে না)
 async function updateMarketDataSilently() {
-  // এখানে my.wefx.top থেকে ডেটা ফেচ করে আপডেট করতে হবে
+  // এখানে ai.cxt.com থেকে ডেটা ফেচ করে আপডেট করতে হবে
   // ইউজারদের কোন নোটিফিকেশন দেওয়া হবে না
 }
 
