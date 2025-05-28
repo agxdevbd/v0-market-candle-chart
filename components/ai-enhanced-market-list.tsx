@@ -51,6 +51,18 @@ export function AIEnhancedMarketList() {
   const [viewType, setViewType] = useState<"chart" | "details">("chart")
   const [lastUpdate, setLastUpdate] = useState<Date>(new Date())
   const [aiAnalysisActive, setAiAnalysisActive] = useState(true)
+  const [isMobile, setIsMobile] = useState(false)
+
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768)
+    }
+
+    checkMobile()
+    window.addEventListener("resize", checkMobile)
+
+    return () => window.removeEventListener("resize", checkMobile)
+  }, [])
 
   useEffect(() => {
     loadMarketData()
@@ -67,7 +79,7 @@ export function AIEnhancedMarketList() {
     try {
       setLoading(true)
       // Simulate loading time for AI processing
-      await new Promise((resolve) => setTimeout(resolve, 1500))
+      await new Promise((resolve) => setTimeout(resolve, isMobile ? 1000 : 1500))
 
       setMarkets(allMarkets)
       setLastUpdate(new Date())
@@ -111,10 +123,10 @@ export function AIEnhancedMarketList() {
       // AI Success notification
       const notification = document.createElement("div")
       notification.innerHTML = `
-        <div class="fixed top-4 right-4 bg-gradient-to-r from-blue-500 to-purple-600 text-white px-6 py-3 rounded-xl z-50 shadow-2xl border border-blue-400/30">
+        <div class="fixed top-4 right-4 bg-gradient-to-r from-blue-500 to-purple-600 text-white px-4 py-2 md:px-6 md:py-3 rounded-xl z-50 shadow-2xl border border-blue-400/30 max-w-sm">
           <div class="flex items-center space-x-2">
             <div class="animate-spin">🤖</div>
-            <span>AI Chart Downloaded: ${market.name}</span>
+            <span class="text-sm md:text-base">AI Chart Downloaded: ${market.name}</span>
             <div class="animate-pulse">✨</div>
           </div>
         </div>
@@ -139,11 +151,11 @@ export function AIEnhancedMarketList() {
   }
 
   const getMarketIcon = (percentChange: number) => {
-    if (percentChange >= 10) return <Rocket className="w-4 h-4 text-green-400" />
-    if (percentChange >= 5) return <TrendingUp className="w-4 h-4 text-green-400" />
-    if (percentChange >= 0) return <Star className="w-4 h-4 text-blue-400" />
-    if (percentChange >= -5) return <TrendingDown className="w-4 h-4 text-orange-400" />
-    return <Flame className="w-4 h-4 text-red-400" />
+    if (percentChange >= 10) return <Rocket className={`${isMobile ? "w-3 h-3" : "w-4 h-4"} text-green-400`} />
+    if (percentChange >= 5) return <TrendingUp className={`${isMobile ? "w-3 h-3" : "w-4 h-4"} text-green-400`} />
+    if (percentChange >= 0) return <Star className={`${isMobile ? "w-3 h-3" : "w-4 h-4"} text-blue-400`} />
+    if (percentChange >= -5) return <TrendingDown className={`${isMobile ? "w-3 h-3" : "w-4 h-4"} text-orange-400`} />
+    return <Flame className={`${isMobile ? "w-3 h-3" : "w-4 h-4"} text-red-400`} />
   }
 
   const getAIRating = (market: Market) => {
@@ -157,11 +169,11 @@ export function AIEnhancedMarketList() {
 
   if (loading) {
     return (
-      <div className="container mx-auto p-4">
+      <div className={`container mx-auto ${isMobile ? "p-3" : "p-4"}`}>
         <motion.div className="text-center text-white" initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
-          <div className="relative mb-8">
+          <div className="relative mb-6 md:mb-8">
             <motion.div
-              className="w-24 h-24 mx-auto mb-6 bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 rounded-full flex items-center justify-center"
+              className={`${isMobile ? "w-16 h-16 mb-4" : "w-24 h-24 mb-6"} mx-auto bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 rounded-full flex items-center justify-center`}
               animate={{
                 rotate: 360,
                 boxShadow: [
@@ -176,7 +188,7 @@ export function AIEnhancedMarketList() {
                 boxShadow: { duration: 2, repeat: Number.POSITIVE_INFINITY },
               }}
             >
-              <Brain className="w-12 h-12 text-white" />
+              <Brain className={`${isMobile ? "w-8 h-8" : "w-12 h-12"} text-white`} />
             </motion.div>
 
             <motion.div
@@ -184,19 +196,19 @@ export function AIEnhancedMarketList() {
               animate={{ y: [0, -10, 0], opacity: [0.5, 1, 0.5] }}
               transition={{ duration: 2, repeat: Number.POSITIVE_INFINITY }}
             >
-              <Sparkles className="w-6 h-6 text-yellow-400" />
+              <Sparkles className={`${isMobile ? "w-4 h-4" : "w-6 h-6"} text-yellow-400`} />
             </motion.div>
           </div>
 
           <motion.h2
-            className="text-2xl font-bold mb-4 bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 bg-clip-text text-transparent"
+            className={`${isMobile ? "text-xl" : "text-2xl"} font-bold mb-3 md:mb-4 bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 bg-clip-text text-transparent`}
             animate={{ scale: [1, 1.05, 1] }}
             transition={{ duration: 2, repeat: Number.POSITIVE_INFINITY }}
           >
             🤖 AI Market Analysis in Progress
           </motion.h2>
 
-          <div className="space-y-2 text-sm">
+          <div className={`space-y-2 ${isMobile ? "text-xs" : "text-sm"}`}>
             <motion.p
               className="text-blue-300"
               initial={{ opacity: 0 }}
@@ -228,25 +240,31 @@ export function AIEnhancedMarketList() {
   }
 
   return (
-    <div className="container mx-auto p-4">
-      {/* AI Enhanced Header */}
-      <motion.div className="text-center mb-8" initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }}>
-        <div className="flex items-center justify-center mb-6">
+    <div className={`container mx-auto ${isMobile ? "p-3" : "p-4"}`}>
+      {/* Mobile-Optimized AI Enhanced Header */}
+      <motion.div className="text-center mb-6 md:mb-8" initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }}>
+        <div className="flex items-center justify-center mb-4 md:mb-6">
           <motion.div
             animate={{ rotate: 360 }}
             transition={{ duration: 8, repeat: Number.POSITIVE_INFINITY, ease: "linear" }}
-            className="mr-4"
+            className="mr-3 md:mr-4"
           >
-            <div className="w-12 h-12 bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 rounded-xl flex items-center justify-center">
-              <Brain className="w-6 h-6 text-white" />
+            <div
+              className={`${isMobile ? "w-8 h-8" : "w-12 h-12"} bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 rounded-xl flex items-center justify-center`}
+            >
+              <Brain className={`${isMobile ? "w-4 h-4" : "w-6 h-6"} text-white`} />
             </div>
           </motion.div>
 
           <div>
-            <h2 className="text-4xl font-bold bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">
+            <h2
+              className={`${isMobile ? "text-2xl" : "text-4xl"} font-bold bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 bg-clip-text text-transparent`}
+            >
               AI Market Intelligence
             </h2>
-            <p className="text-blue-300 text-sm mt-1">Powered by Advanced Neural Networks</p>
+            <p className={`text-blue-300 ${isMobile ? "text-xs" : "text-sm"} mt-1`}>
+              Powered by Advanced Neural Networks
+            </p>
           </div>
 
           <motion.div
@@ -255,15 +273,20 @@ export function AIEnhancedMarketList() {
               rotate: [0, 180, 360],
             }}
             transition={{ duration: 4, repeat: Number.POSITIVE_INFINITY }}
-            className="ml-4"
+            className="ml-3 md:ml-4"
           >
-            <Atom className="w-8 h-8 text-yellow-400" />
+            <Atom className={`${isMobile ? "w-6 h-6" : "w-8 h-8"} text-yellow-400`} />
           </motion.div>
         </div>
 
-        {/* AI Status Bar */}
-        <div className="flex items-center justify-center space-x-6 text-sm mb-6">
-          <motion.div animate={{ opacity: aiAnalysisActive ? 1 : 0.5 }} className="flex items-center space-x-2">
+        {/* Mobile-Optimized AI Status Bar */}
+        <div
+          className={`flex ${isMobile ? "flex-col space-y-2" : "items-center justify-center space-x-6"} ${isMobile ? "text-xs" : "text-sm"} mb-4 md:mb-6`}
+        >
+          <motion.div
+            animate={{ opacity: aiAnalysisActive ? 1 : 0.5 }}
+            className="flex items-center justify-center space-x-2"
+          >
             <Badge className="bg-gradient-to-r from-green-500 to-emerald-500 text-white border-0">
               <Wifi className="w-3 h-3 mr-1" />
               Live Data Stream
@@ -273,6 +296,7 @@ export function AIEnhancedMarketList() {
           <motion.div
             animate={{ scale: aiAnalysisActive ? [1, 1.1, 1] : 1 }}
             transition={{ duration: 1, repeat: aiAnalysisActive ? Number.POSITIVE_INFINITY : 0 }}
+            className="flex justify-center"
           >
             <Badge className="bg-gradient-to-r from-blue-500 to-purple-500 text-white border-0">
               <Bot className="w-3 h-3 mr-1" />
@@ -280,10 +304,12 @@ export function AIEnhancedMarketList() {
             </Badge>
           </motion.div>
 
-          <Badge variant="outline" className="border-blue-400 text-blue-400">
-            <Activity className="w-3 h-3 mr-1" />
-            Updated: {lastUpdate.toLocaleTimeString()}
-          </Badge>
+          <div className="flex justify-center">
+            <Badge variant="outline" className="border-blue-400 text-blue-400">
+              <Activity className="w-3 h-3 mr-1" />
+              Updated: {lastUpdate.toLocaleTimeString()}
+            </Badge>
+          </div>
 
           <Button
             variant="outline"
@@ -297,8 +323,8 @@ export function AIEnhancedMarketList() {
           </Button>
         </div>
 
-        {/* AI Features */}
-        <div className="flex flex-wrap justify-center gap-3 mb-6">
+        {/* Mobile-Optimized AI Features */}
+        <div className={`flex flex-wrap justify-center ${isMobile ? "gap-2" : "gap-3"} mb-4 md:mb-6`}>
           {[
             { icon: <Cpu className="w-3 h-3" />, text: "Neural Analysis", color: "from-blue-500 to-cyan-500" },
             { icon: <Target className="w-3 h-3" />, text: "Smart Predictions", color: "from-purple-500 to-pink-500" },
@@ -312,7 +338,7 @@ export function AIEnhancedMarketList() {
             <motion.div
               key={index}
               whileHover={{ scale: 1.1, y: -2 }}
-              className={`bg-gradient-to-r ${feature.color} bg-opacity-20 backdrop-blur-sm px-3 py-1 rounded-full border border-white/20 flex items-center space-x-1 cursor-pointer`}
+              className={`bg-gradient-to-r ${feature.color} bg-opacity-20 backdrop-blur-sm ${isMobile ? "px-2 py-1" : "px-3 py-1"} rounded-full border border-white/20 flex items-center space-x-1 cursor-pointer`}
             >
               <motion.div
                 animate={{ rotate: [0, 360] }}
@@ -320,14 +346,16 @@ export function AIEnhancedMarketList() {
               >
                 {feature.icon}
               </motion.div>
-              <span className="text-xs text-white font-medium">{feature.text}</span>
+              <span className={`${isMobile ? "text-xs" : "text-xs"} text-white font-medium`}>{feature.text}</span>
             </motion.div>
           ))}
         </div>
       </motion.div>
 
-      {/* AI Enhanced Market Grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-4">
+      {/* Mobile-Optimized AI Enhanced Market Grid */}
+      <div
+        className={`grid ${isMobile ? "grid-cols-2 gap-2" : "grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-4"}`}
+      >
         {markets.map((market, index) => {
           const aiRating = getAIRating(market)
 
@@ -337,10 +365,12 @@ export function AIEnhancedMarketList() {
               initial={{ opacity: 0, y: 20, scale: 0.9 }}
               animate={{ opacity: 1, y: 0, scale: 1 }}
               transition={{ delay: index * 0.05 }}
-              whileHover={{ scale: 1.03, y: -8 }}
+              whileHover={{ scale: isMobile ? 1.02 : 1.03, y: isMobile ? -4 : -8 }}
               className="group"
             >
-              <Card className="overflow-hidden bg-gradient-to-br from-gray-900/95 to-gray-800/95 border border-gray-700 hover:border-blue-500/50 transition-all duration-500 backdrop-blur-sm relative">
+              <Card
+                className={`overflow-hidden bg-gradient-to-br from-gray-900/95 to-gray-800/95 border border-gray-700 hover:border-blue-500/50 transition-all duration-500 backdrop-blur-sm relative ${isMobile ? "min-h-[200px]" : ""}`}
+              >
                 {/* AI Glow Effect */}
                 <motion.div
                   className="absolute inset-0 bg-gradient-to-r from-blue-500/10 via-purple-500/10 to-pink-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500"
@@ -351,12 +381,12 @@ export function AIEnhancedMarketList() {
                   style={{ backgroundSize: "200% 100%" }}
                 />
 
-                <CardHeader className="pb-3 px-4 pt-4 relative z-10">
+                <CardHeader className={`${isMobile ? "pb-2 px-2 pt-2" : "pb-3 px-4 pt-4"} relative z-10`}>
                   <div className="flex flex-col items-center text-center">
                     {/* Market Logo & Name with AI Enhancement */}
-                    <div className="flex items-center space-x-2 mb-3">
+                    <div className={`flex items-center ${isMobile ? "space-x-1 mb-2" : "space-x-2 mb-3"}`}>
                       <motion.div
-                        className="w-10 h-10 rounded-xl bg-gradient-to-r from-blue-500 via-purple-600 to-pink-500 flex items-center justify-center overflow-hidden relative"
+                        className={`${isMobile ? "w-6 h-6" : "w-10 h-10"} rounded-xl bg-gradient-to-r from-blue-500 via-purple-600 to-pink-500 flex items-center justify-center overflow-hidden relative`}
                         whileHover={{ rotate: 360, scale: 1.1 }}
                         transition={{ duration: 0.6 }}
                       >
@@ -365,32 +395,36 @@ export function AIEnhancedMarketList() {
                           animate={{ x: ["-100%", "100%"] }}
                           transition={{ duration: 2, repeat: Number.POSITIVE_INFINITY, ease: "linear" }}
                         />
-                        <span className="text-white font-bold text-xs relative z-10">
+                        <span className={`text-white font-bold ${isMobile ? "text-xs" : "text-xs"} relative z-10`}>
                           {market.name.substring(0, 2).toUpperCase()}
                         </span>
                       </motion.div>
-                      <div>
-                        <CardTitle className="text-sm text-white truncate font-bold">{market.name}</CardTitle>
+                      <div className="flex-1 min-w-0">
+                        <CardTitle className={`${isMobile ? "text-xs" : "text-sm"} text-white truncate font-bold`}>
+                          {market.name}
+                        </CardTitle>
                         <div className="flex items-center space-x-1">
                           {getMarketIcon(market.percentChange)}
-                          <span className="text-xs text-gray-400">AI Tracked</span>
+                          <span className={`${isMobile ? "text-xs" : "text-xs"} text-gray-400`}>AI Tracked</span>
                         </div>
                       </div>
                     </div>
 
                     {/* AI Rating Badge */}
                     <motion.div
-                      className={`flex items-center space-x-1 px-2 py-1 rounded-full bg-black/30 border border-gray-600 mb-2`}
+                      className={`flex items-center space-x-1 ${isMobile ? "px-1 py-0.5" : "px-2 py-1"} rounded-full bg-black/30 border border-gray-600 mb-2`}
                       animate={{ scale: [1, 1.05, 1] }}
                       transition={{ duration: 2, repeat: Number.POSITIVE_INFINITY }}
                     >
                       {aiRating.icon}
-                      <span className={`text-xs font-bold ${aiRating.color}`}>{aiRating.rating}</span>
+                      <span className={`${isMobile ? "text-xs" : "text-xs"} font-bold ${aiRating.color}`}>
+                        {isMobile ? aiRating.rating.split(" ")[0] : aiRating.rating}
+                      </span>
                     </motion.div>
 
                     {/* Price with AI Animation */}
                     <motion.div
-                      className="text-xl font-bold text-white mb-2"
+                      className={`${isMobile ? "text-base" : "text-xl"} font-bold text-white mb-2`}
                       animate={{
                         textShadow: [
                           "0 0 5px rgba(59, 130, 246, 0.5)",
@@ -405,7 +439,7 @@ export function AIEnhancedMarketList() {
 
                     {/* 24h Change with Enhanced Animation */}
                     <motion.div
-                      className={`flex items-center text-sm font-medium mb-3 ${
+                      className={`flex items-center ${isMobile ? "text-xs" : "text-sm"} font-medium mb-2 ${
                         market.percentChange >= 0 ? "text-green-400" : "text-red-400"
                       }`}
                       animate={{
@@ -415,16 +449,16 @@ export function AIEnhancedMarketList() {
                       transition={{ duration: 2, repeat: Number.POSITIVE_INFINITY }}
                     >
                       {market.percentChange >= 0 ? (
-                        <TrendingUp className="h-4 w-4 mr-1" />
+                        <TrendingUp className={`${isMobile ? "h-3 w-3" : "h-4 w-4"} mr-1`} />
                       ) : (
-                        <TrendingDown className="h-4 w-4 mr-1" />
+                        <TrendingDown className={`${isMobile ? "h-3 w-3" : "h-4 w-4"} mr-1`} />
                       )}
                       <span className="font-bold">
                         {market.percentChange >= 0 ? "+" : ""}
                         {market.percentChange.toFixed(2)}%
                       </span>
                       <motion.span
-                        className="text-xs text-gray-400 ml-1"
+                        className={`${isMobile ? "text-xs" : "text-xs"} text-gray-400 ml-1`}
                         animate={{ opacity: [0.5, 1, 0.5] }}
                         transition={{ duration: 1.5, repeat: Number.POSITIVE_INFINITY }}
                       >
@@ -432,23 +466,27 @@ export function AIEnhancedMarketList() {
                       </motion.span>
                     </motion.div>
 
-                    {/* AI Enhanced Market Stats */}
-                    <div className="w-full space-y-2 text-xs">
-                      <div className="flex justify-between items-center">
-                        <span className="text-gray-400 flex items-center">
-                          <PieChart className="w-3 h-3 mr-1" />
-                          Market Cap:
-                        </span>
-                        <span className="text-blue-300 font-medium">{formatMarketCap(market.marketCap || 0)}</span>
-                      </div>
+                    {/* AI Enhanced Market Stats - Simplified for Mobile */}
+                    <div className={`w-full space-y-1 ${isMobile ? "text-xs" : "text-xs"}`}>
+                      {!isMobile && (
+                        <>
+                          <div className="flex justify-between items-center">
+                            <span className="text-gray-400 flex items-center">
+                              <PieChart className="w-3 h-3 mr-1" />
+                              Market Cap:
+                            </span>
+                            <span className="text-blue-300 font-medium">{formatMarketCap(market.marketCap || 0)}</span>
+                          </div>
 
-                      <div className="flex justify-between items-center">
-                        <span className="text-gray-400 flex items-center">
-                          <DollarSign className="w-3 h-3 mr-1" />
-                          Volume 24h:
-                        </span>
-                        <span className="text-green-300 font-medium">{formatMarketCap(market.volume24h || 0)}</span>
-                      </div>
+                          <div className="flex justify-between items-center">
+                            <span className="text-gray-400 flex items-center">
+                              <DollarSign className="w-3 h-3 mr-1" />
+                              Volume 24h:
+                            </span>
+                            <span className="text-green-300 font-medium">{formatMarketCap(market.volume24h || 0)}</span>
+                          </div>
+                        </>
+                      )}
 
                       <div className="flex justify-between items-center">
                         <span className="text-gray-400 flex items-center">
@@ -478,25 +516,25 @@ export function AIEnhancedMarketList() {
                   </div>
                 </CardHeader>
 
-                <CardContent className="pt-0 px-4 pb-4 space-y-2 relative z-10">
+                <CardContent className={`${isMobile ? "pt-0 px-2 pb-2" : "pt-0 px-4 pb-4"} space-y-2 relative z-10`}>
                   {/* AI Enhanced Action Buttons */}
-                  <div className="flex gap-2">
+                  <div className={`flex ${isMobile ? "gap-1" : "gap-2"}`}>
                     <Button
                       variant="outline"
                       size="sm"
-                      className="flex-1 text-xs border-blue-500 text-blue-400 hover:bg-blue-500 hover:text-white transition-all duration-300 hover:shadow-lg hover:shadow-blue-500/25"
+                      className={`flex-1 ${isMobile ? "text-xs" : "text-xs"} border-blue-500 text-blue-400 hover:bg-blue-500 hover:text-white transition-all duration-300 hover:shadow-lg hover:shadow-blue-500/25`}
                       onClick={() => handleViewChart(market)}
                     >
-                      <BarChart3 className="h-3 w-3 mr-1" />
+                      <BarChart3 className={`${isMobile ? "h-3 w-3 mr-1" : "h-3 w-3 mr-1"}`} />
                       AI Chart
                     </Button>
                     <Button
                       variant="outline"
                       size="sm"
-                      className="flex-1 text-xs border-green-500 text-green-400 hover:bg-green-500 hover:text-white transition-all duration-300 hover:shadow-lg hover:shadow-green-500/25"
+                      className={`flex-1 ${isMobile ? "text-xs" : "text-xs"} border-green-500 text-green-400 hover:bg-green-500 hover:text-white transition-all duration-300 hover:shadow-lg hover:shadow-green-500/25`}
                       onClick={() => handleViewDetails(market)}
                     >
-                      <Eye className="h-3 w-3 mr-1" />
+                      <Eye className={`${isMobile ? "h-3 w-3 mr-1" : "h-3 w-3 mr-1"}`} />
                       Analysis
                     </Button>
                   </div>
@@ -505,7 +543,7 @@ export function AIEnhancedMarketList() {
                   <Button
                     variant="secondary"
                     size="sm"
-                    className="w-full text-xs md:hidden bg-gradient-to-r from-purple-500/20 to-pink-500/20 border border-purple-400/30 text-purple-300 hover:bg-purple-500 hover:text-white transition-all duration-300"
+                    className={`w-full ${isMobile ? "text-xs" : "text-xs md:hidden"} bg-gradient-to-r from-purple-500/20 to-pink-500/20 border border-purple-400/30 text-purple-300 hover:bg-purple-500 hover:text-white transition-all duration-300`}
                     onClick={() => {
                       setSelectedMarket(market)
                       setViewType("chart")
@@ -513,7 +551,7 @@ export function AIEnhancedMarketList() {
                       setTimeout(() => downloadChartAsPDF(market), 500)
                     }}
                   >
-                    <Download className="h-3 w-3 mr-1" />🤖 AI Download
+                    <Download className={`${isMobile ? "h-3 w-3 mr-1" : "h-3 w-3 mr-1"}`} />🤖 AI Download
                   </Button>
                 </CardContent>
               </Card>
@@ -522,23 +560,27 @@ export function AIEnhancedMarketList() {
         })}
       </div>
 
-      {/* AI Enhanced Market Dialog */}
+      {/* Mobile-Optimized AI Enhanced Market Dialog */}
       <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
         {selectedMarket && (
-          <DialogContent className="max-w-[95vw] md:max-w-6xl max-h-[90vh] overflow-y-auto bg-gradient-to-br from-gray-900 to-gray-800 text-white border border-gray-700">
+          <DialogContent
+            className={`${isMobile ? "max-w-[95vw] max-h-[90vh]" : "max-w-[95vw] md:max-w-6xl max-h-[90vh]"} overflow-y-auto bg-gradient-to-br from-gray-900 to-gray-800 text-white border border-gray-700`}
+          >
             <DialogHeader className="flex flex-row items-center justify-between">
               <DialogTitle className="flex-1 text-white">
-                <div className="flex items-center space-x-3">
+                <div className={`flex items-center ${isMobile ? "space-x-2" : "space-x-3"}`}>
                   <motion.div
-                    className="w-10 h-10 bg-gradient-to-r from-blue-500 via-purple-600 to-pink-500 rounded-xl flex items-center justify-center"
+                    className={`${isMobile ? "w-8 h-8" : "w-10 h-10"} bg-gradient-to-r from-blue-500 via-purple-600 to-pink-500 rounded-xl flex items-center justify-center`}
                     animate={{ rotate: 360 }}
                     transition={{ duration: 3, repeat: Number.POSITIVE_INFINITY, ease: "linear" }}
                   >
-                    <Brain className="w-5 h-5 text-white" />
+                    <Brain className={`${isMobile ? "w-4 h-4" : "w-5 h-5"} text-white`} />
                   </motion.div>
                   <div>
-                    <span className="text-lg md:text-xl font-bold">{selectedMarket.name}</span>
-                    <div className="text-sm text-blue-300 flex items-center">
+                    <span className={`${isMobile ? "text-base" : "text-lg md:text-xl"} font-bold`}>
+                      {selectedMarket.name}
+                    </span>
+                    <div className={`${isMobile ? "text-xs" : "text-sm"} text-blue-300 flex items-center`}>
                       <Bot className="w-3 h-3 mr-1" />
                       {viewType === "chart" ? "AI Trading Chart" : "AI Market Analysis"}
                     </div>
@@ -554,7 +596,7 @@ export function AIEnhancedMarketList() {
                     onClick={() => downloadChartAsPDF(selectedMarket)}
                   >
                     <Download className="h-4 w-4" />
-                    <span className="hidden sm:inline">🤖 AI Download</span>
+                    <span className={isMobile ? "hidden" : "hidden sm:inline"}>🤖 AI Download</span>
                   </Button>
                 )}
                 <Button variant="ghost" size="sm" onClick={() => setIsDialogOpen(false)} className="text-gray-400">
@@ -563,11 +605,13 @@ export function AIEnhancedMarketList() {
               </div>
             </DialogHeader>
 
-            <div className="space-y-6">
+            <div className={`space-y-4 ${isMobile ? "space-y-3" : "space-y-6"}`}>
               {viewType === "chart" ? (
                 <>
-                  {/* AI Chart Only View */}
-                  <div className="bg-black p-4 rounded-lg border border-gray-700 relative overflow-hidden">
+                  {/* Chart Only View */}
+                  <div
+                    className={`bg-black ${isMobile ? "p-2" : "p-4"} rounded-lg border border-gray-700 relative overflow-hidden`}
+                  >
                     <motion.div
                       className="absolute inset-0 bg-gradient-to-r from-blue-500/5 via-purple-500/5 to-pink-500/5"
                       animate={{
@@ -577,15 +621,17 @@ export function AIEnhancedMarketList() {
                       style={{ backgroundSize: "200% 100%" }}
                     />
 
-                    <div className="flex justify-between items-center mb-4 relative z-10">
+                    <div className={`flex justify-between items-center ${isMobile ? "mb-2" : "mb-4"} relative z-10`}>
                       <div className="flex items-center space-x-2">
                         <motion.div
                           animate={{ rotate: 360 }}
                           transition={{ duration: 2, repeat: Number.POSITIVE_INFINITY, ease: "linear" }}
                         >
-                          <Cpu className="w-5 h-5 text-blue-400" />
+                          <Cpu className={`${isMobile ? "w-4 h-4" : "w-5 h-5"} text-blue-400`} />
                         </motion.div>
-                        <h3 className="text-lg font-bold text-white">AI Neural Chart Analysis</h3>
+                        <h3 className={`${isMobile ? "text-base" : "text-lg"} font-bold text-white`}>
+                          AI Neural Chart Analysis
+                        </h3>
                       </div>
                       <Button
                         variant="ghost"
@@ -598,21 +644,27 @@ export function AIEnhancedMarketList() {
                       </Button>
                     </div>
 
-                    <div className="h-64 md:h-96 w-full relative z-10" data-chart-canvas>
+                    <div className={`${isMobile ? "h-48" : "h-64 md:h-96"} w-full relative z-10`} data-chart-canvas>
                       <AIMarketCandlestickChart market={selectedMarket} />
                     </div>
 
-                    <div className="text-center text-xs text-gray-400 mt-4 flex items-center justify-center space-x-4 relative z-10">
+                    <div
+                      className={`text-center ${isMobile ? "text-xs" : "text-xs"} text-gray-400 mt-2 md:mt-4 flex ${isMobile ? "flex-col space-y-1" : "items-center justify-center space-x-4"} relative z-10`}
+                    >
                       <motion.span
                         animate={{ opacity: [0.5, 1, 0.5] }}
                         transition={{ duration: 2, repeat: Number.POSITIVE_INFINITY }}
                       >
                         🤖 AI-powered real-time analysis from ai.cxt.com
                       </motion.span>
-                      <span>•</span>
-                      <span>📊 Neural network predictions</span>
-                      <span>•</span>
-                      <span>⚡ 30-day historical data</span>
+                      {!isMobile && (
+                        <>
+                          <span>•</span>
+                          <span>📊 Neural network predictions</span>
+                          <span>•</span>
+                          <span>⚡ 30-day historical data</span>
+                        </>
+                      )}
                     </div>
                   </div>
                 </>
@@ -620,28 +672,30 @@ export function AIEnhancedMarketList() {
                 <>
                   {/* AI Enhanced Details View */}
                   <Tabs defaultValue="details">
-                    <TabsList className="grid w-full grid-cols-4 bg-gradient-to-r from-gray-800 to-gray-700 border border-gray-600">
+                    <TabsList
+                      className={`grid w-full grid-cols-4 bg-gradient-to-r from-gray-800 to-gray-700 border border-gray-600 ${isMobile ? "h-10" : ""}`}
+                    >
                       <TabsTrigger
                         value="details"
-                        className="text-xs data-[state=active]:bg-gradient-to-r data-[state=active]:from-blue-600 data-[state=active]:to-purple-600"
+                        className={`${isMobile ? "text-xs" : "text-xs"} data-[state=active]:bg-gradient-to-r data-[state=active]:from-blue-600 data-[state=active]:to-purple-600`}
                       >
                         🤖 AI Info
                       </TabsTrigger>
                       <TabsTrigger
                         value="chart"
-                        className="text-xs data-[state=active]:bg-gradient-to-r data-[state=active]:from-blue-600 data-[state=active]:to-purple-600"
+                        className={`${isMobile ? "text-xs" : "text-xs"} data-[state=active]:bg-gradient-to-r data-[state=active]:from-blue-600 data-[state=active]:to-purple-600`}
                       >
                         📊 Neural Chart
                       </TabsTrigger>
                       <TabsTrigger
                         value="history"
-                        className="text-xs data-[state=active]:bg-gradient-to-r data-[state=active]:from-blue-600 data-[state=active]:to-purple-600"
+                        className={`${isMobile ? "text-xs" : "text-xs"} data-[state=active]:bg-gradient-to-r data-[state=active]:from-blue-600 data-[state=active]:to-purple-600`}
                       >
                         📈 History
                       </TabsTrigger>
                       <TabsTrigger
                         value="ai-analysis"
-                        className="text-xs data-[state=active]:bg-gradient-to-r data-[state=active]:from-blue-600 data-[state=active]:to-purple-600"
+                        className={`${isMobile ? "text-xs" : "text-xs"} data-[state=active]:bg-gradient-to-r data-[state=active]:from-blue-600 data-[state=active]:to-purple-600`}
                       >
                         🧠 AI Brain
                       </TabsTrigger>
@@ -654,8 +708,8 @@ export function AIEnhancedMarketList() {
                     <TabsContent value="chart">
                       <div className="space-y-4">
                         <div className="flex justify-between items-center">
-                          <h3 className="text-lg font-bold flex items-center">
-                            <Cpu className="w-5 h-5 mr-2 text-blue-400" />
+                          <h3 className={`${isMobile ? "text-base" : "text-lg"} font-bold flex items-center`}>
+                            <Cpu className={`${isMobile ? "w-4 h-4" : "w-5 h-5"} mr-2 text-blue-400`} />
                             AI Neural Chart
                           </h3>
                           <Button
@@ -669,7 +723,7 @@ export function AIEnhancedMarketList() {
                           </Button>
                         </div>
                         <div className="bg-black p-4 rounded-lg">
-                          <div className="h-64 md:h-96 w-full" data-chart-canvas>
+                          <div className={`${isMobile ? "h-48" : "h-64 md:h-96"} w-full`} data-chart-canvas>
                             <AIMarketCandlestickChart market={selectedMarket} />
                           </div>
                         </div>
@@ -678,26 +732,26 @@ export function AIEnhancedMarketList() {
 
                     <TabsContent value="history">
                       <div className="space-y-4">
-                        <h3 className="text-lg font-bold flex items-center">
-                          <Calendar className="w-5 h-5 mr-2 text-green-400" />
+                        <h3 className={`${isMobile ? "text-base" : "text-lg"} font-bold flex items-center`}>
+                          <Calendar className={`${isMobile ? "w-4 h-4" : "w-5 h-5"} mr-2 text-green-400`} />
                           30-Day AI Historical Analysis
                         </h3>
-                        <div className="space-y-2 max-h-96 overflow-y-auto">
+                        <div className={`space-y-2 ${isMobile ? "max-h-64" : "max-h-96"} overflow-y-auto`}>
                           {selectedMarket.historicalData?.slice(0, 30).map((data, index) => (
                             <motion.div
                               key={index}
-                              className="flex justify-between items-center p-3 bg-gradient-to-r from-gray-800/50 to-gray-700/50 rounded border border-gray-700"
+                              className={`flex justify-between items-center ${isMobile ? "p-2" : "p-3"} bg-gradient-to-r from-gray-800/50 to-gray-700/50 rounded border border-gray-700`}
                               initial={{ opacity: 0, x: -20 }}
                               animate={{ opacity: 1, x: 0 }}
                               transition={{ delay: index * 0.02 }}
                               whileHover={{ scale: 1.02, backgroundColor: "rgba(59, 130, 246, 0.1)" }}
                             >
                               <div>
-                                <div className="font-bold text-white flex items-center">
+                                <div className={`font-bold text-white flex items-center ${isMobile ? "text-sm" : ""}`}>
                                   <Calendar className="w-3 h-3 mr-1 text-blue-400" />
                                   {data.date}
                                 </div>
-                                <div className="text-sm text-gray-400">
+                                <div className={`${isMobile ? "text-xs" : "text-sm"} text-gray-400`}>
                                   Open: ${data.open.toFixed(2)} | High: ${data.high.toFixed(2)} | Low: $
                                   {data.low.toFixed(2)} | Close: ${data.close.toFixed(2)}
                                 </div>
@@ -710,7 +764,7 @@ export function AIEnhancedMarketList() {
                                   <Brain className="w-3 h-3 text-purple-400" />
                                 </motion.div>
                                 <div
-                                  className={`font-bold ${data.percentChange >= 0 ? "text-green-400" : "text-red-400"}`}
+                                  className={`font-bold ${data.percentChange >= 0 ? "text-green-400" : "text-red-400"} ${isMobile ? "text-sm" : ""}`}
                                 >
                                   {data.percentChange >= 0 ? "+" : ""}
                                   {data.percentChange.toFixed(2)}%
@@ -723,25 +777,27 @@ export function AIEnhancedMarketList() {
                     </TabsContent>
 
                     <TabsContent value="ai-analysis">
-                      <div className="p-6 text-center">
+                      <div className={`${isMobile ? "p-4" : "p-6"} text-center`}>
                         <motion.h3
-                          className="text-2xl font-bold mb-6 bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 bg-clip-text text-transparent"
+                          className={`${isMobile ? "text-lg" : "text-2xl"} font-bold mb-4 md:mb-6 bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 bg-clip-text text-transparent`}
                           animate={{ scale: [1, 1.05, 1] }}
                           transition={{ duration: 2, repeat: Number.POSITIVE_INFINITY }}
                         >
                           🧠 Advanced AI Market Intelligence
                         </motion.h3>
 
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div className={`grid grid-cols-1 ${isMobile ? "gap-4" : "md:grid-cols-2 gap-6"}`}>
                           <motion.div
-                            className="bg-gradient-to-br from-blue-500/20 to-cyan-500/20 border border-blue-400/30 rounded-xl p-6"
+                            className={`bg-gradient-to-br from-blue-500/20 to-cyan-500/20 border border-blue-400/30 rounded-xl ${isMobile ? "p-4" : "p-6"}`}
                             whileHover={{ scale: 1.02, boxShadow: "0 0 30px rgba(59, 130, 246, 0.3)" }}
                           >
-                            <div className="text-blue-400 font-bold mb-4 flex items-center justify-center">
-                              <Cpu className="w-5 h-5 mr-2" />
+                            <div
+                              className={`text-blue-400 font-bold ${isMobile ? "mb-2 text-sm" : "mb-4"} flex items-center justify-center`}
+                            >
+                              <Cpu className={`${isMobile ? "w-4 h-4" : "w-5 h-5"} mr-2`} />
                               Neural Network Analysis
                             </div>
-                            <ul className="text-sm text-blue-300 space-y-2 text-left">
+                            <ul className={`${isMobile ? "text-xs" : "text-sm"} text-blue-300 space-y-2 text-left`}>
                               <li className="flex items-center">
                                 <Zap className="w-3 h-3 mr-2 text-yellow-400" />
                                 Deep learning pattern recognition
@@ -762,14 +818,16 @@ export function AIEnhancedMarketList() {
                           </motion.div>
 
                           <motion.div
-                            className="bg-gradient-to-br from-purple-500/20 to-pink-500/20 border border-purple-400/30 rounded-xl p-6"
+                            className={`bg-gradient-to-br from-purple-500/20 to-pink-500/20 border border-purple-400/30 rounded-xl ${isMobile ? "p-4" : "p-6"}`}
                             whileHover={{ scale: 1.02, boxShadow: "0 0 30px rgba(147, 51, 234, 0.3)" }}
                           >
-                            <div className="text-purple-400 font-bold mb-4 flex items-center justify-center">
-                              <Rocket className="w-5 h-5 mr-2" />
+                            <div
+                              className={`text-purple-400 font-bold ${isMobile ? "mb-2 text-sm" : "mb-4"} flex items-center justify-center`}
+                            >
+                              <Rocket className={`${isMobile ? "w-4 h-4" : "w-5 h-5"} mr-2`} />
                               AI Predictions & Insights
                             </div>
-                            <ul className="text-sm text-purple-300 space-y-2 text-left">
+                            <ul className={`${isMobile ? "text-xs" : "text-sm"} text-purple-300 space-y-2 text-left`}>
                               <li className="flex items-center">
                                 <Star className="w-3 h-3 mr-2 text-yellow-400" />
                                 Next-day price forecasting
@@ -791,11 +849,13 @@ export function AIEnhancedMarketList() {
                         </div>
 
                         <motion.div
-                          className="mt-8 p-4 bg-gradient-to-r from-gray-800/50 to-gray-700/50 rounded-xl border border-gray-600"
+                          className={`mt-6 md:mt-8 ${isMobile ? "p-3" : "p-4"} bg-gradient-to-r from-gray-800/50 to-gray-700/50 rounded-xl border border-gray-600`}
                           animate={{ opacity: [0.8, 1, 0.8] }}
                           transition={{ duration: 3, repeat: Number.POSITIVE_INFINITY }}
                         >
-                          <div className="flex items-center justify-center space-x-2 text-sm text-gray-300">
+                          <div
+                            className={`flex items-center justify-center space-x-2 ${isMobile ? "text-xs" : "text-sm"} text-gray-300`}
+                          >
                             <motion.div
                               animate={{ rotate: 360 }}
                               transition={{ duration: 2, repeat: Number.POSITIVE_INFINITY, ease: "linear" }}
