@@ -2,11 +2,10 @@
 
 import { useState, useEffect } from "react"
 import { motion } from "framer-motion"
-import { Users, Activity, TrendingUp } from "lucide-react"
+import { Users, Zap, Activity } from "lucide-react"
 
 export function UserCounter() {
-  const [userCount, setUserCount] = useState(200000) // ২ লাখ থেকে শুরু
-  const [targetReached, setTargetReached] = useState(false)
+  const [userCount, setUserCount] = useState(200000)
   const [isMobile, setIsMobile] = useState(false)
 
   useEffect(() => {
@@ -20,51 +19,59 @@ export function UserCounter() {
     return () => window.removeEventListener("resize", checkMobile)
   }, [])
 
-  // প্রতি মিলিসেকেন্ডে ইউজার কাউন্ট আপডেট
+  const getTimeBasedRange = () => {
+    const now = new Date()
+    const hour = now.getHours()
+
+    // 6 AM to 12 PM (6-11 in 24-hour format)
+    if (hour >= 6 && hour < 12) {
+      return { min: 250000, max: 300000 }
+    } else {
+      return { min: 200000, max: 250000 }
+    }
+  }
+
   useEffect(() => {
+    // Set initial value based on current time
+    const { min } = getTimeBasedRange()
+    setUserCount(min + Math.floor(Math.random() * 20000))
+
     const updateUserCount = () => {
+      const { min, max } = getTimeBasedRange()
+
       setUserCount((prev) => {
-        // যদি ৫ লাখে পৌঁছে গেছে, তাহলে ২ লাখ থেকে আবার শুরু
-        if (prev >= 500000) {
-          setTargetReached(false)
-          return 200000 + Math.floor(Math.random() * 1000)
-        }
+        // Generate a random increment between 100-1000
+        const increment = Math.floor(Math.random() * 900) + 100
+        let newCount = prev + increment
 
-        // র‍্যান্ডম ইনক্রিমেন্ট: ১০, ২০, ১০০
-        const increments = [10, 20, 100]
-        const randomIncrement = increments[Math.floor(Math.random() * increments.length)]
-
-        const newCount = prev + randomIncrement
-
-        // ৫ লাখে পৌঁছলে টার্গেট রিচড সেট করি
-        if (newCount >= 500000) {
-          setTargetReached(true)
-          return 500000
+        // If we exceed max, reset to min range
+        if (newCount > max) {
+          newCount = min + Math.floor(Math.random() * 10000)
         }
 
         return newCount
       })
     }
 
-    // প্রতি মিলিসেকেন্ডে আপডেট (১০০০ মিলিসেকেন্ড = ১ সেকেন্ড)
-    const intervalId = setInterval(updateUserCount, 1) // ১ মিলিসেকেন্ড
+    // Random interval between 2-5 seconds
+    const createRandomInterval = () => {
+      const randomDelay = Math.random() * 3000 + 2000 // 2-5 seconds
+      return setTimeout(() => {
+        updateUserCount()
+        createRandomInterval() // Schedule next update
+      }, randomDelay)
+    }
 
-    return () => clearInterval(intervalId)
+    const timeoutId = createRandomInterval()
+
+    // Cleanup function
+    return () => clearTimeout(timeoutId)
   }, [])
 
-  const getActivityStatus = () => {
-    if (userCount < 250000) return "Rising Fast"
-    if (userCount < 350000) return "High Activity"
-    if (userCount < 450000) return "Peak Hours"
-    return "Maximum Capacity"
-  }
-
-  const getActivityColor = () => {
-    if (userCount < 250000) return "text-green-400"
-    if (userCount < 350000) return "text-yellow-400"
-    if (userCount < 450000) return "text-orange-400"
-    return "text-red-400"
-  }
+  // Get current time range for display
+  const { min, max } = getTimeBasedRange()
+  const currentHour = new Date().getHours()
+  const timeStatus = currentHour >= 6 && currentHour < 12 ? "Peak Hours" : "Regular Hours"
 
   return (
     <motion.div
@@ -84,7 +91,7 @@ export function UserCounter() {
               }}
               transition={{
                 repeat: Number.POSITIVE_INFINITY,
-                duration: 1,
+                duration: 2,
                 repeatType: "loop",
               }}
               className="absolute -top-1 -right-1 w-2 h-2 bg-green-400 rounded-full"
@@ -92,14 +99,14 @@ export function UserCounter() {
           </div>
           <div>
             <div className="flex items-center text-sm text-blue-200">
-              <span>Live Active Users</span>
+              <span>Active Users</span>
               <motion.div
                 animate={{
                   rotate: [0, 360],
                 }}
                 transition={{
                   repeat: Number.POSITIVE_INFINITY,
-                  duration: 2,
+                  duration: 3,
                   ease: "linear",
                 }}
                 className="ml-1.5"
@@ -107,45 +114,23 @@ export function UserCounter() {
                 <Activity className="w-3 h-3 text-green-400" />
               </motion.div>
             </div>
-
-            {/* Real-time Counter with Animation */}
             <motion.div
-              key={Math.floor(userCount / 1000)} // Re-animate every 1000 users
-              initial={{ scale: 1.1, color: "#10b981" }}
+              key={userCount}
+              initial={{ scale: 1.2, color: "#10b981" }}
               animate={{ scale: 1, color: "#ffffff" }}
-              transition={{ duration: 0.2 }}
-              className="text-2xl font-bold text-white font-mono"
+              transition={{ duration: 0.3 }}
+              className="text-2xl font-bold text-white"
             >
               {userCount.toLocaleString()}
             </motion.div>
-
-            <div className={`text-xs mt-1 flex items-center justify-center ${getActivityColor()}`}>
-              <TrendingUp className="w-3 h-3 mr-1" />
-              <span>{getActivityStatus()}</span>
-              {targetReached && (
-                <motion.span
-                  animate={{ scale: [1, 1.2, 1] }}
-                  transition={{ repeat: 3, duration: 0.5 }}
-                  className="ml-1"
-                >
-                  🔥
-                </motion.span>
-              )}
+            <div className="text-xs text-blue-300 mt-1 flex items-center justify-center">
+              <Zap className="w-3 h-3 mr-1 text-yellow-400" />
+              <span>{timeStatus}</span>
+              <span className="mx-1">•</span>
+              <span className="text-blue-300/70">
+                {min.toLocaleString()} - {max.toLocaleString()}
+              </span>
             </div>
-
-            {/* Progress Bar */}
-            <div className="w-full bg-gray-700 rounded-full h-1.5 mt-2">
-              <motion.div
-                className="bg-gradient-to-r from-green-400 to-blue-500 h-1.5 rounded-full"
-                initial={{ width: "0%" }}
-                animate={{
-                  width: `${((userCount - 200000) / (500000 - 200000)) * 100}%`,
-                }}
-                transition={{ duration: 0.1 }}
-              />
-            </div>
-
-            <div className="text-xs text-blue-300/70 mt-1">Range: 200K - 500K • Live Updates</div>
           </div>
         </div>
       </div>
