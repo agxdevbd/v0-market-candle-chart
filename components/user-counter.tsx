@@ -5,7 +5,7 @@ import { motion } from "framer-motion"
 import { Users, Zap, Activity } from "lucide-react"
 
 export function UserCounter() {
-  const [userCount, setUserCount] = useState(100000)
+  const [userCount, setUserCount] = useState(200000)
   const [isMobile, setIsMobile] = useState(false)
 
   useEffect(() => {
@@ -25,37 +25,37 @@ export function UserCounter() {
 
     // 6 AM to 12 PM (6-11 in 24-hour format)
     if (hour >= 6 && hour < 12) {
-      return { min: 150000, max: 200000 }
+      return { min: 250000, max: 300000 }
     } else {
-      return { min: 100000, max: 150000 }
+      return { min: 200000, max: 250000 }
     }
   }
 
   useEffect(() => {
     // Set initial value based on current time
     const { min } = getTimeBasedRange()
-    setUserCount(min + Math.floor(Math.random() * 10000))
+    setUserCount(min + Math.floor(Math.random() * 20000))
 
     const updateUserCount = () => {
       const { min, max } = getTimeBasedRange()
 
       setUserCount((prev) => {
-        // Generate a random increment between 1-10
-        const increment = Math.floor(Math.random() * 10) + 1
+        // Generate a random increment between 100-1000
+        const increment = Math.floor(Math.random() * 900) + 100
         let newCount = prev + increment
 
         // If we exceed max, reset to min range
         if (newCount > max) {
-          newCount = min + Math.floor(Math.random() * 5000)
+          newCount = min + Math.floor(Math.random() * 10000)
         }
 
         return newCount
       })
     }
 
-    // Random interval between 1-5 seconds
+    // Random interval between 2-5 seconds
     const createRandomInterval = () => {
-      const randomDelay = Math.random() * 4000 + 1000 // 1-5 seconds
+      const randomDelay = Math.random() * 3000 + 2000 // 2-5 seconds
       return setTimeout(() => {
         updateUserCount()
         createRandomInterval() // Schedule next update
