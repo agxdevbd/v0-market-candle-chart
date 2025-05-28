@@ -340,3 +340,6 @@ function generateContinuousHistoricalData(currentPrice: number, currentPercentCh
 
   return data.reverse()
 }
+
+// Export marketData as an alias to allMarkets for backward compatibility
+export const marketData = allMarkets
