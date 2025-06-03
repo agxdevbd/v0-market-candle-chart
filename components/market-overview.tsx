@@ -10,7 +10,7 @@ import { MarketCandlestick } from "@/components/market-candlestick"
 import { MarketDetailView } from "@/components/market-detail-view"
 import { TrendingUp, TrendingDown, BarChart3, X, Calendar, TimerIcon as Timeline } from "lucide-react"
 import { formatCurrency } from "@/lib/utils"
-import { marketData } from "@/lib/market-data"
+import { allMarkets } from "@/lib/real-market-data"
 import type { Market } from "@/lib/types"
 
 export function MarketOverview() {
@@ -22,9 +22,9 @@ export function MarketOverview() {
     setIsDialogOpen(true)
   }
 
-  const positiveMarkets = marketData.filter((market) => market.percentChange > 0)
-  const negativeMarkets = marketData.filter((market) => market.percentChange < 0)
-  const neutralMarkets = marketData.filter((market) => market.percentChange === 0)
+  const positiveMarkets = allMarkets.filter((market) => market.percentChange > 0)
+  const negativeMarkets = allMarkets.filter((market) => market.percentChange < 0)
+  const neutralMarkets = allMarkets.filter((market) => market.percentChange === 0)
 
   // Get today's date for display
   const today = new Date()
@@ -46,7 +46,7 @@ export function MarketOverview() {
           <CardHeader>
             <CardTitle className="text-white flex items-center justify-center">
               <BarChart3 className="w-6 h-6 mr-2 text-blue-400" />
-              4-Day Market Analysis
+              2-Day Market Analysis
               <motion.div
                 animate={{
                   rotate: [0, 10, 0, -10, 0],
@@ -65,7 +65,7 @@ export function MarketOverview() {
             <div className="text-center text-blue-200 text-sm flex items-center justify-center space-x-4">
               <div className="flex items-center">
                 <Calendar className="w-4 h-4 mr-1" />
-                <span>Historical candlestick charts (23/01 - 26/01/2024)</span>
+                <span>Live candlestick charts (26/01 - 27/01/2024)</span>
               </div>
               <div className="flex items-center">
                 <Timeline className="w-4 h-4 mr-1" />
@@ -101,14 +101,14 @@ export function MarketOverview() {
                 transition={{ delay: 1.5 }}
                 className="bg-blue-500/20 border border-blue-400/30 rounded-lg p-3 text-center"
               >
-                <div className="text-blue-400 font-bold text-lg">{marketData.length}</div>
+                <div className="text-blue-400 font-bold text-lg">{allMarkets.length}</div>
                 <div className="text-blue-300 text-xs">Total Markets</div>
               </motion.div>
             </div>
 
             {/* Market Grid */}
             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
-              {marketData.map((market, index) => (
+              {allMarkets.map((market, index) => (
                 <motion.div
                   key={market.name}
                   initial={{ opacity: 0, y: 20 }}
@@ -132,7 +132,7 @@ export function MarketOverview() {
                     <div className="text-xs text-gray-400">{formatCurrency(market.price)}</div>
                   </div>
 
-                  {/* 3-Day Candlestick Chart */}
+                  {/* 2-Day Candlestick Chart */}
                   <div className="h-20 mb-2">
                     <MarketCandlestick market={market} showPercentage={false} showDates={false} />
                   </div>
@@ -156,12 +156,12 @@ export function MarketOverview() {
                       {market.percentChange > 0 ? "+" : ""}
                       {market.percentChange}%
                     </div>
-                    <div className="text-xs text-gray-500">Today</div>
+                    <div className="text-xs text-gray-500">Today (27/01)</div>
                   </div>
 
                   {/* Historical Performance Summary */}
                   <div className="text-center mb-2">
-                    <div className="text-xs text-gray-400">3-Day Trend:</div>
+                    <div className="text-xs text-gray-400">2-Day Trend:</div>
                     <div className="flex justify-center space-x-1">
                       {market.historicalData?.map((data, idx) => (
                         <div
@@ -201,7 +201,7 @@ export function MarketOverview() {
               <div className="bg-green-500/10 border border-green-400/30 rounded-lg p-4">
                 <h4 className="text-green-400 font-bold mb-2 flex items-center">
                   <TrendingUp className="w-4 h-4 mr-1" />
-                  Today's Top Gainers
+                  Today's Top Gainers (27/01)
                 </h4>
                 <div className="space-y-1">
                   {positiveMarkets
@@ -220,7 +220,7 @@ export function MarketOverview() {
               <div className="bg-red-500/10 border border-red-400/30 rounded-lg p-4">
                 <h4 className="text-red-400 font-bold mb-2 flex items-center">
                   <TrendingDown className="w-4 h-4 mr-1" />
-                  Today's Top Losers
+                  Today's Top Losers (27/01)
                 </h4>
                 <div className="space-y-1">
                   {negativeMarkets
@@ -240,28 +240,20 @@ export function MarketOverview() {
             <div className="mt-6 bg-blue-500/10 border border-blue-400/30 rounded-lg p-4">
               <h4 className="text-blue-400 font-bold mb-2 flex items-center">
                 <Timeline className="w-4 h-4 mr-1" />
-                3-Day Market Summary
+                2-Day Market Summary
               </h4>
-              <div className="grid grid-cols-4 gap-4 text-center">
+              <div className="grid grid-cols-2 gap-4 text-center">
                 <div>
-                  <div className="text-white font-bold">23/01/2024</div>
+                  <div className="text-white font-bold">26/01/2024</div>
                   <div className="text-xs text-gray-400">Day 1</div>
                 </div>
                 <div>
-                  <div className="text-white font-bold">24/01/2024</div>
-                  <div className="text-xs text-gray-400">Day 2</div>
-                </div>
-                <div>
-                  <div className="text-white font-bold">25/01/2024</div>
-                  <div className="text-xs text-gray-400">Day 3</div>
-                </div>
-                <div>
-                  <div className="text-blue-400 font-bold">26/01/2024</div>
+                  <div className="text-blue-400 font-bold">27/01/2024</div>
                   <div className="text-xs text-blue-300">Today</div>
                 </div>
               </div>
               <div className="mt-2 text-center text-xs text-gray-400">
-                📈 Complete historical data available • New candlesticks added daily
+                📈 Complete 2-day historical data available • New candlesticks added daily • Next update: 28/01/2024
               </div>
             </div>
           </CardContent>
@@ -273,14 +265,14 @@ export function MarketOverview() {
         {selectedMarket && (
           <DialogContent className="max-w-5xl max-h-[90vh] overflow-y-auto">
             <DialogHeader className="flex flex-row items-center justify-between">
-              <DialogTitle className="flex-1">{selectedMarket.name} - 4-Day Market Analysis</DialogTitle>
+              <DialogTitle className="flex-1">{selectedMarket.name} - 2-Day Market Analysis</DialogTitle>
               <Button variant="ghost" size="sm" onClick={() => setIsDialogOpen(false)} className="md:hidden p-2">
                 <X className="h-4 w-4" />
               </Button>
             </DialogHeader>
             <Tabs defaultValue="chart">
               <TabsList>
-                <TabsTrigger value="chart">3-Day Chart</TabsTrigger>
+                <TabsTrigger value="chart">2-Day Chart</TabsTrigger>
                 <TabsTrigger value="details">Today's Details</TabsTrigger>
                 <TabsTrigger value="history">Historical Data</TabsTrigger>
                 <TabsTrigger value="future">Future Analysis</TabsTrigger>
@@ -288,13 +280,13 @@ export function MarketOverview() {
               <TabsContent value="chart">
                 <div className="space-y-4">
                   <div className="text-center">
-                    <h3 className="text-lg font-bold mb-2">3-Day Candlestick Chart</h3>
-                    <p className="text-sm text-muted-foreground">Complete historical view from 23/01 to 26/01/2024</p>
+                    <h3 className="text-lg font-bold mb-2">2-Day Candlestick Chart</h3>
+                    <p className="text-sm text-muted-foreground">Complete historical view from 26/01 to 27/01/2024</p>
                   </div>
                   <div className="h-96 w-full border rounded-lg">
                     <MarketCandlestick market={selectedMarket} showPercentage={true} showDates={true} />
                   </div>
-                  <div className="grid grid-cols-3 gap-4 text-center text-sm">
+                  <div className="grid grid-cols-2 gap-4 text-center text-sm">
                     {selectedMarket.historicalData?.map((data, index) => (
                       <div key={index} className="bg-gray-100 dark:bg-gray-800 p-2 rounded">
                         <div className="font-bold">{data.date}</div>
@@ -323,7 +315,8 @@ export function MarketOverview() {
                         <div>
                           <div className="font-bold">{data.date}</div>
                           <div className="text-sm text-muted-foreground">
-                            Open: ${data.open} | High: ${data.high} | Low: ${data.low} | Close: ${data.close}
+                            Open: ${data.open.toFixed(2)} | High: ${data.high.toFixed(2)} | Low: ${data.low.toFixed(2)}{" "}
+                            | Close: ${data.close.toFixed(2)}
                           </div>
                         </div>
                         <div className={`font-bold ${data.percentChange >= 0 ? "text-green-600" : "text-red-600"}`}>
@@ -339,15 +332,16 @@ export function MarketOverview() {
                 <div className="p-4 text-center">
                   <h3 className="text-lg font-bold mb-4">Future Market Projections</h3>
                   <p className="text-muted-foreground mb-4">
-                    Advanced AI analysis based on 3-day historical performance data.
+                    Advanced AI analysis based on 2-day historical performance data.
                   </p>
                   <div className="bg-blue-500/10 border border-blue-400/30 rounded-lg p-4">
                     <div className="text-blue-400 font-bold mb-2">AI Insights Available:</div>
                     <ul className="text-sm text-blue-300 space-y-1">
-                      <li>• 3-day trend analysis complete</li>
+                      <li>• 2-day trend analysis complete</li>
                       <li>• Pattern recognition active</li>
                       <li>• Volatility assessment ready</li>
                       <li>• Next-day prediction models</li>
+                      <li>• Ready for 28/01/2024 data integration</li>
                     </ul>
                   </div>
                 </div>

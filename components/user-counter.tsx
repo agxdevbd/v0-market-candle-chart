@@ -2,13 +2,19 @@
 
 import { useState, useEffect } from "react"
 import { motion } from "framer-motion"
-import { Users, Zap, Activity } from "lucide-react"
+import { Users, Zap, Activity, Globe } from "lucide-react"
 
 export function UserCounter() {
-  const [userCount, setUserCount] = useState(() => {
-    // ভিজিট শুরুতে ২ লাখ থেকে ২.৫ লাখের মধ্যে র্যান্ডম নাম্বার
-    return Math.floor(Math.random() * 50000) + 200000
+  const [totalUsers, setTotalUsers] = useState(() => {
+    // টোটাল ইউজার ১ মিলিয়ন থেকে ১০ মিলিয়ন পর্যন্ত
+    return Math.floor(Math.random() * 9000000) + 1000000
   })
+
+  const [activeUsers, setActiveUsers] = useState(() => {
+    // অ্যাক্টিভ ইউজার ১-৪ মিলিয়ন পর্যন্ত
+    return Math.floor(Math.random() * 4) + 1
+  })
+
   const [timeOnPage, setTimeOnPage] = useState(0)
   const [isMobile, setIsMobile] = useState(false)
   const [isIncreasing, setIsIncreasing] = useState(true)
@@ -33,29 +39,27 @@ export function UserCounter() {
     return () => clearInterval(timer)
   }, [])
 
-  // প্রতি মিলি সেকেন্ডে ইউজার কাউন্ট আপডেট
+  // টোটাল ইউজার কাউন্ট আপডেট (১-১০ মিলিয়ন)
   useEffect(() => {
-    const updateUserCount = () => {
-      setUserCount((prev) => {
-        const min = 200000
-        const max = 500000
+    const updateTotalUsers = () => {
+      setTotalUsers((prev) => {
+        const min = 1000000 // ১ মিলিয়ন
+        const max = 10000000 // ১০ মিলিয়ন
 
-        // র্যান্ডম ইনক্রিমেন্ট: ১০, ২০, ১০০
-        const increments = [10, 20, 100]
+        // র্যান্ডম ইনক্রিমেন্ট: ১০০০, ৫০০০, ১০০০০
+        const increments = [1000, 5000, 10000]
         const randomIncrement = increments[Math.floor(Math.random() * increments.length)]
 
         let newCount = prev
 
         if (isIncreasing) {
           newCount = prev + randomIncrement
-          // ম্যাক্স রিচ করলে কমানো শুরু করি
           if (newCount >= max) {
             setIsIncreasing(false)
             newCount = max
           }
         } else {
           newCount = prev - randomIncrement
-          // মিনিমাম রিচ করলে বাড়ানো শুরু করি
           if (newCount <= min) {
             setIsIncreasing(true)
             newCount = min
@@ -66,24 +70,46 @@ export function UserCounter() {
       })
     }
 
-    // প্রতি মিলি সেকেন্ডে আপডেট
-    const intervalId = setInterval(updateUserCount, 1)
+    // প্রতি ১০০ মিলি সেকেন্ডে আপডেট
+    const intervalId = setInterval(updateTotalUsers, 100)
 
     return () => clearInterval(intervalId)
   }, [isIncreasing])
 
+  // অ্যাক্টিভ ইউজার আপডেট (১-৪ মিলিয়ন)
+  useEffect(() => {
+    const updateActiveUsers = () => {
+      setActiveUsers((prev) => {
+        const options = [1, 2, 3, 4] // ১, ২, ৩, ৪ মিলিয়ন
+        return options[Math.floor(Math.random() * options.length)]
+      })
+    }
+
+    // প্রতি ৫ সেকেন্ডে অ্যাক্টিভ ইউজার চেঞ্জ
+    const intervalId = setInterval(updateActiveUsers, 5000)
+
+    return () => clearInterval(intervalId)
+  }, [])
+
   const getActivityStatus = () => {
-    if (userCount >= 450000) return "Peak Activity"
-    if (userCount >= 350000) return "High Activity"
-    if (userCount >= 250000) return "Active Users"
+    if (activeUsers >= 4) return "Peak Activity"
+    if (activeUsers >= 3) return "High Activity"
+    if (activeUsers >= 2) return "Active Users"
     return "Growing Fast"
   }
 
   const getStatusColor = () => {
-    if (userCount >= 450000) return "text-red-400"
-    if (userCount >= 350000) return "text-orange-400"
-    if (userCount >= 250000) return "text-green-400"
+    if (activeUsers >= 4) return "text-red-400"
+    if (activeUsers >= 3) return "text-orange-400"
+    if (activeUsers >= 2) return "text-green-400"
     return "text-blue-400"
+  }
+
+  const formatNumber = (num: number) => {
+    if (num >= 1000000) {
+      return (num / 1000000).toFixed(1) + "M"
+    }
+    return num.toLocaleString()
   }
 
   return (
@@ -93,8 +119,40 @@ export function UserCounter() {
       transition={{ delay: 0.8 }}
       className="relative z-10 text-center mb-8"
     >
-      <div className="bg-gradient-to-r from-blue-600/20 to-purple-600/20 backdrop-blur-sm border border-blue-400/30 rounded-2xl p-4 max-w-sm mx-auto">
-        <div className="flex items-center justify-center space-x-3">
+      <div className="bg-gradient-to-r from-blue-600/20 to-purple-600/20 backdrop-blur-sm border border-blue-400/30 rounded-2xl p-4 max-w-md mx-auto">
+        {/* টোটাল ইউজার */}
+        <div className="flex items-center justify-center space-x-3 mb-3">
+          <div className="relative">
+            <Globe className="w-6 h-6 text-purple-400" />
+            <motion.div
+              animate={{
+                scale: [1, 1.5, 1],
+                opacity: [0.5, 1, 0.5],
+              }}
+              transition={{
+                repeat: Number.POSITIVE_INFINITY,
+                duration: 2,
+                repeatType: "loop",
+              }}
+              className="absolute -top-1 -right-1 w-2 h-2 bg-purple-400 rounded-full"
+            />
+          </div>
+          <div>
+            <div className="text-sm text-purple-200">Total Users</div>
+            <motion.div
+              key={Math.floor(totalUsers / 100000)}
+              initial={{ scale: 1.1, color: isIncreasing ? "#10b981" : "#ef4444" }}
+              animate={{ scale: 1, color: "#ffffff" }}
+              transition={{ duration: 0.2 }}
+              className="text-xl font-bold text-white font-mono"
+            >
+              {formatNumber(totalUsers)}
+            </motion.div>
+          </div>
+        </div>
+
+        {/* অ্যাক্টিভ ইউজার */}
+        <div className="flex items-center justify-center space-x-3 border-t border-blue-400/20 pt-3">
           <div className="relative">
             <Users className="w-6 h-6 text-blue-400" />
             <motion.div
@@ -128,28 +186,28 @@ export function UserCounter() {
               </motion.div>
             </div>
             <motion.div
-              key={Math.floor(userCount / 100)} // Update animation every 100 users
-              initial={{ scale: 1.1, color: isIncreasing ? "#10b981" : "#ef4444" }}
+              key={activeUsers}
+              initial={{ scale: 1.2, color: "#10b981" }}
               animate={{ scale: 1, color: "#ffffff" }}
-              transition={{ duration: 0.1 }}
+              transition={{ duration: 0.3 }}
               className="text-2xl font-bold text-white font-mono"
             >
-              {userCount.toLocaleString()}
+              {activeUsers}.0M
             </motion.div>
             <div className={`text-xs mt-1 flex items-center justify-center ${getStatusColor()}`}>
               <Zap className="w-3 h-3 mr-1 text-yellow-400" />
               <span>{getActivityStatus()}</span>
               <motion.span
                 animate={{
-                  rotate: isIncreasing ? 0 : 180,
+                  rotate: activeUsers >= 3 ? 0 : 180,
                 }}
                 transition={{ duration: 0.3 }}
                 className="ml-1"
               >
-                {isIncreasing ? "📈" : "📉"}
+                {activeUsers >= 3 ? "📈" : "📊"}
               </motion.span>
             </div>
-            <div className="text-xs text-blue-300/70 mt-1">Range: 200K - 500K • Live Updates</div>
+            <div className="text-xs text-blue-300/70 mt-1">Range: 1M - 4M Active • Live Updates</div>
           </div>
         </div>
       </div>
